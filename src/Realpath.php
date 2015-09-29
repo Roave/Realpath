@@ -18,7 +18,7 @@ class Realpath
         }
 
         $realpath = realpath($path);
-        
+
         return $realpath;
     }
 }
