@@ -13,29 +13,12 @@ class Realpath
      */
     public static function get($path)
     {
-        $realpath = realpath($path);
-
-        if (false === $realpath) {
+        if (!file_exists($path)) {
             throw Exception\PathDoesNotExist::fromPath($path);
         }
 
+        $realpath = realpath($path);
+        
         return $realpath;
-    }
-
-    /**
-     * Simple check to see if a path exists
-     *
-     * @param string $path
-     * @return bool
-     */
-    public static function exists($path)
-    {
-        try {
-            self::get($path);
-        } catch (\Exception $e) {
-            return false;
-        }
-
-        return true;
     }
 }
