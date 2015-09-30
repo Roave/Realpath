@@ -9,6 +9,7 @@ class Realpath
      *
      * @param string $path
      * @return string
+     * @throws Exception\PathPartDoesNotExist
      * @throws Exception\PathDoesNotExist
      */
     public static function get($path)
