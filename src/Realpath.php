@@ -14,10 +14,7 @@ class Realpath
      */
     public static function get($path)
     {
-        if (self::isRelativePath($path)) {
-            $path = self::makeAbsolutePath($path);
-        }
-
+        $path = self::makeAbsolutePath($path);
         $path = self::removeDotPaths($path);
         $path = self::removeDuplicateSlashes($path);
 
@@ -29,28 +26,11 @@ class Realpath
                 throw Exception\PathPartDoesNotExist::fromSubPath($subPath, $path);
             }
 
-            // Is the path a symlink? if so, resolve it
-            // @todo https://github.com/Roave/Realpath/issues/4
+            $subPath = self::resolveSymbolicLink($subPath);
         }
 
-        // @todo remove this
-        $path = realpath($path);
-        if ($path === false) {
-            throw Exception\PathDoesNotExist::fromPath($path);
-        }
-
+        $path = isset($subPath) ? $subPath : $path;
         return $path;
-    }
-
-    /**
-     * Is the path a symbolic link?
-     *
-     * @param string $path
-     * @return bool
-     */
-    private static function isSymbolicLink($path)
-    {
-        return is_link($path);
     }
 
     /**
@@ -61,7 +41,7 @@ class Realpath
      */
     private static function resolveSymbolicLink($path)
     {
-        if (!self::isSymbolicLink($path)) {
+        if (!is_link($path)) {
             return $path;
         }
 
@@ -90,6 +70,10 @@ class Realpath
      */
     private static function makeAbsolutePath($path)
     {
+        if (!self::isRelativePath($path)) {
+            return $path;
+        }
+
         // @todo https://github.com/Roave/Realpath/issues/5
         return $path;
     }
