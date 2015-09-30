@@ -2,7 +2,7 @@
 
 namespace Roave\RealpathTest;
 
-use Roave\Realpath\Exception\PathDoesNotExist;
+use Roave\Realpath\Exception\PathPartDoesNotExist;
 use Roave\Realpath\Realpath;
 
 /**
@@ -20,7 +20,7 @@ class RealpathTest extends \PHPUnit_Framework_TestCase
     {
         $test = "/foo/bar/baz/bat";
 
-        $this->setExpectedException(PathDoesNotExist::class);
+        $this->setExpectedException(PathPartDoesNotExist::class);
         Realpath::get($test);
     }
 }

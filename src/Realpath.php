@@ -20,23 +20,16 @@ class Realpath
         $path = self::removeDotPaths($path);
         $path = self::removeDuplicateSlashes($path);
 
-        // @todo split the path into parts, and check each part's path:
-        //   - does the path exist? if not, throw a useful exception
-        //     @todo https://github.com/Roave/Realpath/issues/2
-        //   - is the path a symlink? if so, resolve it
-        //     @todo https://github.com/Roave/Realpath/issues/4
+        $pathParts = explode('/', $path);
+        for ($i = 2; $i <= count($pathParts); $i++) {
+            $subPath = implode('/', array_slice($pathParts, 0, $i));
 
-        // e.g.:
-        //  /foo/bar/baz should be broken into:
-        //    - /foo
-        //    - /foo/bar
-        //    - /foo/bar/baz
-        //  Each path should be tested to see if it exists, and feedback given
-        //  if it does not
+            if (!file_exists($subPath)) {
+                throw Exception\PathPartDoesNotExist::fromSubPath($subPath, $path);
+            }
 
-        // @todo remove this when https://github.com/Roave/Realpath/issues/2 is implemented
-        if (!file_exists($path)) {
-            throw Exception\PathDoesNotExist::fromPath($path);
+            // Is the path a symlink? if so, resolve it
+            // @todo https://github.com/Roave/Realpath/issues/4
         }
 
         // @todo remove this
